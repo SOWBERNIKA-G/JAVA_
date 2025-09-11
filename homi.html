@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GovJobFinder – Home</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+  :root {
+    --primary-color: #1a237e;
+    --secondary-color: #3949ab;
+    --accent-color: #0d47a1;
+    --background-gradient: linear-gradient(to right, #aedde4, #f5f7fa);
+    --card-color: #ffffff;
+    --text-color: #212121;
+    --muted-text: #555;
+    --button-color: #1565c0;
+    --button-hover: #0b4fa8;
+    --border-radius: 10px;
+    --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: 'Roboto', sans-serif;
+    background: var(--background-gradient);
+    color: var(--text-color);
+  }
+
+  .container {
+    display: flex;
+    min-height: 100vh;
+  }
+
+  .sidebar {
+    width: 240px;
+    background: linear-gradient(to bottom, #051f32, #1479b0);
+    color: white;
+    padding: 30px 20px;
+    box-shadow: var(--shadow);
+  }
+
+  .sidebar h2 {
+    font-size: 24px;
+    margin-bottom: 40px;
+    font-weight: 700;
+    color: #ffca28;
+    text-shadow: 0 0 5px rgba(255, 202, 40, 0.6);
+  }
+
+  .sidebar ul {
+    list-style: none;
+  }
+
+  .sidebar ul li {
+    margin: 20px 0;
+    font-size: 16px;
+    cursor: pointer;
+    transition: color 0.3s;
+  }
+
+  .sidebar ul li:hover {
+    color: #ffca28;
+  }
+
+  .main-content {
+    flex: 1;
+    padding: 30px 40px;
+    background: linear-gradient(to bottom right, #f5f7fa, #e3f2fd);
+  }
+
+  .topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+  }
+
+  .topbar input {
+    width: 60%;
+    padding: 12px;
+    border-radius: var(--border-radius);
+    border: 1px solid #bbb;
+    font-size: 15px;
+    transition: border 0.3s;
+  }
+
+  .topbar input:focus {
+    border-color: var(--accent-color);
+    outline: none;
+  }
+
+  .user-actions {
+    display: flex;
+    gap: 10px;
+  }
+
+  .user-actions button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: var(--border-radius);
+    font-weight: 500;
+    cursor: pointer;
+    background: linear-gradient(to right, #07213e, #1771bf);
+    color: white;
+    transition: background 0.3s;
+  }
+
+  .user-actions button:hover {
+    background: linear-gradient(to right, #072956, #1976d2);
+  }
+
+  .filters {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+  }
+
+  .filters button {
+    padding: 10px 18px;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background-color 0.3s;
+  }
+
+  .filters button:nth-child(1) { background-color: #042f4e; color: white; }
+  .filters button:nth-child(2) { background-color:#042f4e ; color: white; }
+  .filters button:nth-child(3) { background-color:#042f4e; color: white; }
+  .filters button:nth-child(4) { background-color: #042f4e; color: white; }
+  .filters button:nth-child(5) { background-color: #042f4e; color: white; }
+  .filters button:nth-child(6) { background-color: #042f4e; color: white; }
+
+  .filters button:hover {
+    opacity: 0.85;
+  }
+
+  .job-listings h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    font-weight: 600;
+    color: var(--accent-color);
+  }
+
+  .job-card {
+    display: flex;
+    align-items: center;
+    background-color: var(--card-color);
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .job-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+  }
+
+  .job-card img {
+    width: 60px;
+    height: 60px;
+    margin-right: 20px;
+  }
+
+  .job-info h3 {
+    font-size: 18px;
+    margin-bottom: 5px;
+    font-weight: 500;
+  }
+
+  .job-info p {
+    font-size: 14px;
+    color: var(--muted-text);
+  }
+
+  .apply-btn {
+    background-color: #ff9800;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.3s;
+  }
+
+  .apply-btn:hover {
+    background-color: #bbb6b0;
+  }
+</style>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
+  import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAPUpaEumlz-QwLyTyaAJZogPVieaqz9jk",
+    authDomain: "job-finder-8b1bb.firebaseapp.com",
+    projectId: "job-finder-8b1bb",
+    storageBucket: "job-finder-8b1bb.appspot.com",
+    messagingSenderId: "40046459164",
+    appId: "1:40046459164:android:1234922ce2b1da4ffd62d9"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  window.loginUser = function() {
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+
+    signInWithEmailAndPassword(auth, email, password)
+      .then(() => {
+        window.location.href = "pro.html";
+      })
+      .catch(error => {
+        alert("Error: " + error.message);
+      });
+  };
+</script>
+
+</head>
+<body>
+  <div class="container">
+    <aside class="sidebar">
+      <h2>GovJobFinder</h2>
+      <ul>
+        <li>Dashboard</li>
+        <li>Notifications</li>
+        <li>Exam Calendar</li>
+        <li>Help & Support</li>
+      </ul>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <input type="text" id="searchInput" placeholder="Search Government Jobs by Role or Department" />
+        <div class="user-actions">
+          <button onclick="goToLogin()">Login</button>
+          <button onclick="goToSigin()">Sign Up</button>
+        </div>
+      </header>
+
+      <nav class="filters">
+        <button>Central Govt</button>
+        <button>State Govt</button>
+        <button>Railways</button>
+        <button>Banking</button>
+        <button>Defense</button>
+        <button>Teaching</button>
+      </nav>
+
+      <section class="job-listings">
+        <h2>Latest Government Jobs</h2>
+
+        <div class="job-card">
+          <img src="gov-icon.png" alt="UPSC" />
+          <div class="job-info">
+            <h3>Assistant Section Officer</h3>
+            <p>UPSC – New Delhi</p>
+            <p>Pay Level 7 • Apply by: 30 Sep 2025</p>
+          </div>
+          <button class="apply-btn">Apply</button>
+        </div>
+
+        <div class="job-card">
+          <img src="gov-icon.png" alt="TNPSC" />
+          <div class="job-info">
+            <h3>Junior Engineer</h3>
+            <p>TNPSC – Tamil Nadu</p>
+            <p>Pay Level 6 • Apply by: 25 Sep 2025</p>
+          </div>
+          <button class="apply-btn">Apply</button>
+        </div>
+
+        <div class="job-card">
+          <img src="gov-icon.png" alt="IBPS" />
+          <div class="job-info">
+            <h3>Probationary Officer</h3>
+            <p>IBPS – Multiple Banks</p>
+            <p>Pay Level 7 • Apply by: 20 Sep 2025</p>
+          </div>
+          <button class="apply-btn">Apply</button>
+        </div>
+
+        <div class="job-card">
+          <img src="gov-icon.png" alt="Indian Railways" />
+          <div class="job-info">
+            <h3>Station Master</h3>
+            <p>Indian Railways – Pan India</p>
+            <p>Pay Level 6 • Apply by: 18 Sep 2025</p></div>
+            <button class="apply-btn">Apply</button>
+        </div>
+      </section>
+    </main>
+  </div>
+
+<script>
+    function goToLogin() {
+      window.location.href = "login.html";
+    }
+
+    function goToSigin() {
+      window.location.href = "sigin.html";
+    }
+
+    document.getElementById("searchInput").addEventListener("input", function() {
+      const query = this.value.toLowerCase();
+      const jobs = document.querySelectorAll(".job-card");
+
+      jobs.forEach(job => {
+        const title = job.querySelector("h3").textContent.toLowerCase();
+        job.style.display = title.includes(query) ? "flex" : "none";
+      });
+    });
+  </script>
+</body>
+</html>
