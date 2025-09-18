@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Government Job Finder - Eligibility Checker</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #f4f7f6;
+    padding: 20px;
+    margin: 0;
+  }
+
+  .sidebar {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    width: 200px;
+    height: calc(100vh - 40px);
+    background: #2980b9;
+    border-radius: 10px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .sidebar a {
+    color: white;
+    text-decoration: none;
+    padding: 12px 15px;
+    border-radius: 6px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    transition: background-color 0.3s;
+    font-size: 1rem;
+  }
+
+  .sidebar a:hover {
+    background-color: #1c5980;
+  }
+
+  .main-content {
+    margin-left: 240px;
+    max-width: 750px;
+    background: white;
+    padding: 30px 40px;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+  }
+
+  h2 {
+    color: #2c3e50;
+    margin-bottom: 20px;
+  }
+
+  label {
+    display: block;
+    margin-top: 15px;
+    font-weight: 600;
+    color: #34495e;
+  }
+
+  input, select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 6px;
+    border: 1.5px solid #bdc3c7;
+    border-radius: 6px;
+    font-size: 1rem;
+  }
+
+  button {
+    margin-top: 20px;
+    padding: 12px;
+    font-size: 1rem;
+    background-color: #2980b9;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.3s;
+  }
+
+  button:hover {
+    background-color: #1c5980;
+  }
+
+  .result {
+    margin-top: 25px;
+    padding: 15px;
+    border-radius: 8px;
+    background: #eef2f7;
+    font-size: 1.05rem;
+  }
+
+  .eligible {
+    color: green;
+    font-weight: bold;
+  }
+
+  .not-eligible {
+    color: red;
+    font-weight: bold;
+  }
+
+  @media (max-width: 768px) {
+    .sidebar {
+      position: static;
+      width: 100%;
+      height: auto;
+      border-radius: 10px 10px 0 0;
+      flex-direction: row;
+      overflow-x: auto;
+      padding: 10px 5px;
+      margin-bottom: 20px;
+    }
+    .sidebar a {
+      margin-bottom: 0;
+      margin-right: 12px;
+      white-space: nowrap;
+    }
+    .main-content {
+      margin-left: 0;
+      max-width: 100%;
+      padding: 20px;
+    }
+  }
+</style>
+</head>
+<body>
+
+  <!-- Sidebar Navigation -->
+  <nav class="sidebar">
+    <a href="job_search.html">Job Search</a>
+    <a href="eligibility_checker.html">Eligibility Checker</a>
+    <a href="application.html">Application Tracker</a>
+    <a href="notification.html">Notification System</a>
+    <a href="study_material.html">Study Materials</a>
+    <a href="community_forum.html">Community Forum</a>
+    <a href="view_profile.html">View Profile</a>
+  </nav>
+
+  <div class="main-content">
+    <h2>Eligibility Checker</h2>
+
+    <form id="eligibilityForm">
+      <label for="age">Your Age</label>
+      <input type="number" id="age" name="age" readonly />
+
+      <label for="education">Highest Qualification</label>
+      <input type="text" id="education" name="education" readonly />
+
+      <label for="category">Choose Job Category</label>
+      <select id="category" required>
+        <option value="">Select</option>
+        <option>Banking</option>
+        <option>Railways</option>
+        <option>Police</option>
+        <option>Defence</option>
+        <option>Teaching</option>
+      </select>
+
+      <button type="submit">Check Eligibility</button>
+    </form>
+
+    <div id="result" class="result"></div>
+  </div>
+
+<script>
+  const form = document.getElementById("eligibilityForm");
+  const result = document.getElementById("result");
+
+  // Load saved profile data
+  const storedProfile = localStorage.getItem("govJobProfile");
+  if (storedProfile) {
+    const profile = JSON.parse(storedProfile);
+    document.getElementById("age").value = profile.age || "";
+    document.getElementById("education").value = profile.education || "";
+  } else {
+    document.getElementById("age").value = "";
+    document.getElementById("education").value = "";
+    alert("⚠️ Please create your profile first.");
+    window.location.href = "create_profile.html";
+  }
+
+  form.addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    const age = parseInt(document.getElementById("age").value);
+    const education = document.getElementById("education").value;
+    const category = document.getElementById("category").value;
+
+    let message = "";
+
+    // Eligibility rules
+    if (category === "Banking") {
+      if (age >= 20 && age <= 30 && (education.includes("Graduate") || education.includes("Post Graduate") || education.includes("B.") || education.includes("M."))) {
+        message = `<p class="eligible">✅ You are eligible for Banking jobs.</p>`;
+      } else {
+        message = `<p class="not-eligible">❌ You are not eligible for Banking jobs.</p>`;
+      }
+    }
+
+    if (category === "Railways") {
+      if (age >= 18 && age <= 33 && education !== "10th Pass") {
+        message = `<p class="eligible">✅ You are eligible for Railway jobs.</p>`;
+      } else {
+        message = `<p class="not-eligible">❌ You are not eligible for Railway jobs.</p>`;
+      }
+    }
+
+    if (category === "Police") {
+      if (age >= 18 && age <= 25 && education !== "10th Pass") {
+        message = `<p class="eligible">✅ You are eligible for Police jobs.</p>`;
+      } else {
+        message = `<p class="not-eligible">❌ You are not eligible for Police jobs.</p>`;
+      }
+    }
+
+    if (category === "Defence") {
+      if (age >= 18 && age <= 23 && (education.includes("12") || education.includes("Graduate") || education.includes("Diploma"))) {
+        message = `<p class="eligible">✅ You are eligible for Defence jobs.</p>`;
+      } else {
+        message = `<p class="not-eligible">❌ You are not eligible for Defence jobs.</p>`;
+      }
+    }
+
+    if (category === "Teaching") {
+      if (age >= 21 && age <= 35 && (education.includes("Graduate") || education.includes("Post Graduate") || education.includes("B.") || education.includes("M."))) {
+        message = `<p class="eligible">✅ You are eligible for Teaching jobs.</p>`;
+      } else {
+        message = `<p class="not-eligible">❌ You are not eligible for Teaching jobs.</p>`;
+      }
+    }
+
+    result.innerHTML = message;
+  });
+</script>
+
+</body>
+</html>
