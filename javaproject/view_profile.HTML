@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>View Profile - Government Job Finder</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #f4f7f6;
+    padding: 20px;
+    margin: 0;
+  }
+
+  /* Sidebar fixed on the left */
+  .sidebar {
+    position: fixed;
+    top: 20px; /* same as body padding */
+    left: 20px;
+    width: 200px;
+    height: calc(100vh - 40px); /* full height minus body padding top+bottom */
+    background: #2980b9;
+    border-radius: 10px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .sidebar a {
+    color: white;
+    text-decoration: none;
+    padding: 12px 15px;
+    border-radius: 6px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    transition: background-color 0.3s;
+    font-size: 1rem;
+  }
+
+  .sidebar a:hover {
+    background-color: #1c5980;
+  }
+
+  /* Main content with left margin to avoid sidebar overlap */
+  .main-content {
+    margin-left: 240px; /* sidebar width + some spacing */
+    max-width: 650px;
+    background: white;
+    padding: 30px 40px;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+  }
+
+  h2 {
+    color: #2c3e50;
+    margin-bottom: 30px;
+  }
+
+  .profile-pic {
+    display: block;
+    margin-bottom: 25px;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #2980b9;
+  }
+
+  p {
+    margin: 12px 0;
+    font-size: 1.1rem;
+    color: #34495e;
+  }
+
+  strong {
+    color: #2c3e50;
+  }
+
+  .back-button {
+    text-align: center;
+    margin-top: 30px;
+  }
+
+  .back-button a {
+    padding: 12px 18px;
+    background: #2980b9;
+    color: white;
+    text-decoration: none;
+    border-radius: 7px;
+    font-weight: 600;
+    transition: background-color 0.3s;
+  }
+
+  .back-button a:hover {
+    background: #1c5980;
+  }
+
+  /* Responsive for smaller screens */
+  @media (max-width: 768px) {
+    .sidebar {
+      position: static;
+      width: 100%;
+      height: auto;
+      border-radius: 10px 10px 0 0;
+      flex-direction: row;
+      overflow-x: auto;
+      padding: 10px 5px;
+      margin-bottom: 20px;
+    }
+
+    .sidebar a {
+      margin-bottom: 0;
+      margin-right: 12px;
+      white-space: nowrap;
+    }
+
+    .main-content {
+      margin-left: 0;
+      max-width: 100%;
+      padding: 20px;
+    }
+  }
+</style>
+</head>
+<body>
+
+  <!-- Sidebar Navigation -->
+  <nav class="sidebar" aria-label="Dashboard Navigation">
+    <a href="#">Job Search</a>
+    <a href="#">Eligibility Checker</a>
+    <a href="#">Application Tracker</a>
+    <a href="#">Notification System</a>
+    <a href="#">Study Materials</a>
+    <a href="#">Community Forum</a>
+  </nav>
+
+  <div class="main-content">
+    <h2>Your Profile - Government Job Finder</h2>
+
+    <div id="profileDisplay">
+      <!-- Profile data will be rendered here -->
+    </div>
+
+    <div class="back-button">
+      <a href="index.html">Edit Profile</a>
+    </div>
+  </div>
+
+<script>
+  const profileDisplay = document.getElementById('profileDisplay');
+  const storedProfile = localStorage.getItem('govJobProfile');
+
+  if (!storedProfile) {
+    profileDisplay.innerHTML = '<p>No profile data found. Please create your profile first.</p>';
+  } else {
+    const profile = JSON.parse(storedProfile);
+
+    const profilePicHTML = profile.profilePicData
+      ? `<img src="${profile.profilePicData}" alt="Profile Picture" class="profile-pic" />`
+      : '';
+
+    profileDisplay.innerHTML = `
+      ${profilePicHTML}
+      <p><strong>Full Name:</strong> ${profile.fullname}</p>
+      <p><strong>Email:</strong> ${profile.email}</p>
+      <p><strong>Age:</strong> ${profile.age}</p>
+      <p><strong>State of Residence:</strong> ${profile.state}</p>
+      <p><strong>Highest Education Qualification:</strong> ${profile.education}</p>
+      <p><strong>Skills / Specializations:</strong> ${profile.skills || 'N/A'}</p>
+      <p><strong>Job Interests / Preferred Departments:</strong> ${profile.interests || 'N/A'}</p>
+      <p><strong>Brief Bio / About Yourself:</strong><br>${profile.bio ? profile.bio.replace(/\n/g, '<br>') : 'N/A'}</p>
+    `;
+  }
+</script>
+</body>
+</html>
+
+
+
+
