@@ -1,80 +1,108 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Login Page</title>
   <link rel="stylesheet" href="login.css" />
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-auth.js";
-  
-    const firebaseConfig = {
-      apiKey: "AIzaSyAPUpaEumlz-QwLyTyaAJZogPVieaqz9jk",
-      authDomain: "job-finder-8b1bb.firebaseapp.com",
-      projectId: "job-finder-8b1bb",
-      storageBucket: "job-finder-8b1bb.appspot.com",
-      messagingSenderId: "40046459164",
-      appId: "1:40046459164:android:1234922ce2b1da4ffd62d9"
-    };
-  
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-  
-    window.loginUser = () => {
-      const email = document.getElementById("username").value;
-      const password = document.getElementById("password").value;
-  
-      signInWithEmailAndPassword(auth, email, password)
-        .then(() => {
-          window.location.href = "pro.html";
-        })
-        .catch(error => {
-          alert("Error: " + error.message);
-        });
-    };
-  </script>
-  
 
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Login Page</title>
+<style>
+  body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(to right, #74ebd5, #9face6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.login-container {
+  background-color: white;
+  padding: 40px;
+  border-radius: 10px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  width: 300px;
+}
+
+.login-container h2 {
+  text-align: center;
+  margin-bottom: 24px;
+  color: #333;
+}
+
+form label {
+  display: block;
+  margin-bottom: 8px;
+  color: #555;
+}
+
+form input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+form button {
+  width: 100%;
+  padding: 10px;
+  background-color: #5c6bc0;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+form button:hover {
+  background-color: #3f51b5;
+}
+
+</style>
 </head>
 <body>
-  <div class="login-container">
-    <h2>Login</h2>
-    <form id="loginForm" onsubmit="event.preventDefault(); loginUser();">
-      <label for="username">Username (Email)</label>
-      <input type="email" id="username" name="username" required />
 
-      <label for="password">Password</label>
-      <input type="password" id="password" name="password" required />
+<div class="login-container">
+  <h2>Login</h2>
+  <form id="loginForm">
+    <label for="username">Username</label>
+    <input type="text" id="username" placeholder="Enter username" required />
 
-      <button type="submit">Login</button>
-    </form>
-  </div>
+    <label for="password">Password</label>
+    <input type="password" id="password" placeholder="Enter password" required />
 
-  <script>
-    // Function to handle user login
-    function loginUser() {
-      const email = document.getElementById("username").value; // Use username as email
-      const password = document.getElementById("password").value;
+    <button type="submit">Login</button>
+    <div class="error" id="errorMsg"></div>
+  </form>
+</div>
 
-      // Sign in with Firebase Authentication
-      auth.signInWithEmailAndPassword(email, password)
-        .then((userCredential) => {
-          // Successful login, redirect to the dashboard
-          console.log("Login successful!");
-          window.location.href = "pro.html"; // Redirect to pro.html
-        })
-        .catch((error) => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
+<script>
+  const loginForm = document.getElementById('loginForm');
+  const errorMsg = document.getElementById('errorMsg');
 
-          // Display error message
-          console.error("Error: " + errorCode + " - " + errorMessage);
-          alert("Error: " + errorMessage); // Show error message if login fails
-        });
+  // Simple demo credentials (replace or expand as needed)
+  const demoUser = {
+    username: "sandhiya",
+    password: "12345"
+  };
+
+  loginForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+
+    if (username === demoUser.username && password === demoUser.password) {
+      // Successful login
+      window.location.href = "profile.html"; // Redirect to profile page
+    } else {
+      // Wrong credentials
+      errorMsg.textContent = "Invalid username or password!";
     }
-  </script>
+  });
+</script>
+
 </body>
 </html>
-
-

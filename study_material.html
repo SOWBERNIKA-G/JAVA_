@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Government Job Finder - Study Materials</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #f4f7f6;
+    padding: 20px;
+    margin: 0;
+  }
+
+  /* Sidebar */
+  .sidebar {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    width: 200px;
+    height: calc(100vh - 40px);
+    background: #2980b9;
+    border-radius: 10px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .sidebar a {
+    color: white;
+    text-decoration: none;
+    padding: 12px 15px;
+    border-radius: 6px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    transition: background-color 0.3s;
+    font-size: 1rem;
+  }
+
+  .sidebar a:hover {
+    background-color: #1c5980;
+  }
+
+  /* Main content */
+  .main-content {
+    margin-left: 240px;
+    max-width: 900px;
+    background: white;
+    padding: 30px 40px;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+  }
+
+  h2 {
+    color: #2c3e50;
+    margin-bottom: 15px;
+  }
+
+  .search-container {
+    display: flex;
+    margin-bottom: 20px;
+    gap: 10px;
+  }
+
+  .search-container input {
+    flex: 1;
+    padding: 10px;
+    border: 1.5px solid #bdc3c7;
+    border-radius: 6px;
+    font-size: 1rem;
+  }
+
+  .search-container button {
+    padding: 10px 16px;
+    font-size: 1rem;
+    background-color: #2980b9;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+  }
+
+  .search-container button:hover {
+    background-color: #1c5980;
+  }
+
+  .materials {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+  }
+
+  .card {
+    background: #f9f9f9;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    padding: 20px;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .card:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+
+  .card h4 {
+    margin: 0 0 10px;
+    color: #2c3e50;
+  }
+
+  .card p {
+    color: #555;
+    font-size: 0.95rem;
+    margin-bottom: 12px;
+  }
+
+  .card button {
+    background: #2980b9;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+  }
+
+  .card button:hover {
+    background: #1c5980;
+  }
+
+  @media (max-width: 768px) {
+    .sidebar {
+      position: static;
+      width: 100%;
+      height: auto;
+      border-radius: 10px 10px 0 0;
+      flex-direction: row;
+      overflow-x: auto;
+      padding: 10px 5px;
+      margin-bottom: 20px;
+    }
+    .sidebar a {
+      margin-bottom: 0;
+      margin-right: 12px;
+      white-space: nowrap;
+    }
+    .main-content {
+      margin-left: 0;
+      max-width: 100%;
+      padding: 20px;
+    }
+  }
+</style>
+</head>
+<body>
+
+  <!-- Sidebar Navigation -->
+  <nav class="sidebar">
+    <a href="job_search.html">Job Search</a>
+    <a href="eligibility_checker.html">Eligibility Checker</a>
+    <a href="application.html">Application Tracker</a>
+    <a href="notification.html">Notification System</a>
+    <a href="study_material.html">Study Materials</a>
+    <a href="community_forum.html">Community Forum</a>
+    <a href="view_profile.html">View Profile</a>
+    <a href="show_ai_recommendation.html">AI Recommendation</a>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <h2>Study Materials</h2>
+    <p style="color:#555;">Access free study materials and practice papers for government exams.</p>
+
+    <div class="search-container">
+      <input type="text" id="searchInput" placeholder="Search materials (e.g., GK, Reasoning, Maths)" />
+      <button onclick="filterMaterials()">Search</button>
+    </div>
+
+    <div id="materials" class="materials"></div>
+  </div>
+
+<script>
+  const materials = [
+    { title: "Banking Aptitude Practice Set", category: "Banking", desc: "Quantitative aptitude and reasoning mock papers.", file: "banking_aptitude.pdf" },
+    { title: "Railways General Knowledge", category: "Railways", desc: "Latest GK questions for RRB exams.", file: "railways_gk.pdf" },
+    { title: "Police Exam Current Affairs", category: "Police", desc: "Monthly current affairs PDF for police exams.", file: "police_current_affairs.pdf" },
+    { title: "Defence English Grammar Guide", category: "Defence", desc: "Comprehensive English grammar notes.", file: "defence_english.pdf" },
+    { title: "Teaching Pedagogy Notes", category: "Teaching", desc: "Concepts of pedagogy and child development.", file: "teaching_pedagogy.pdf" },
+    { title: "General Mathematics for All Exams", category: "Common", desc: "Arithmetic and quantitative aptitude formulas.", file: "maths_formulas.pdf" }
+  ];
+
+  const materialsContainer = document.getElementById("materials");
+
+  function renderMaterials(list) {
+    materialsContainer.innerHTML = "";
+    if (list.length === 0) {
+      materialsContainer.innerHTML = "<p>No study materials found.</p>";
+      return;
+    }
+
+    list.forEach(mat => {
+      const div = document.createElement("div");
+      div.classList.add("card");
+      div.innerHTML = `
+        <h4>${mat.title}</h4>
+        <p><strong>Category:</strong> ${mat.category}</p>
+        <p>${mat.desc}</p>
+        <button onclick="downloadMaterial('${mat.file}')">📥 Download</button>
+      `;
+      materialsContainer.appendChild(div);
+    });
+  }
+
+  function filterMaterials() {
+    const query = document.getElementById("searchInput").value.toLowerCase();
+    const filtered = materials.filter(m =>
+      m.title.toLowerCase().includes(query) ||
+      m.category.toLowerCase().includes(query) ||
+      m.desc.toLowerCase().includes(query)
+    );
+    renderMaterials(filtered);
+  }
+
+  function downloadMaterial(file) {
+    alert(`📘 Your download for "${file}" has started!`);
+    // In real project, this would trigger an actual file download
+    // window.open(file, "_blank");
+  }
+
+  // Initial render
+  renderMaterials(materials);
+</script>
+
+</body>
+</html>

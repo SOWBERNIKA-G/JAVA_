@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Government Job Finder - Application Tracker</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #f4f7f6;
+    padding: 20px;
+    margin: 0;
+  }
+
+  .sidebar {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    width: 200px;
+    height: calc(100vh - 40px);
+    background: #2980b9;
+    border-radius: 10px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .sidebar a {
+    color: white;
+    text-decoration: none;
+    padding: 12px 15px;
+    border-radius: 6px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    transition: background-color 0.3s;
+    font-size: 1rem;
+  }
+
+  .sidebar a:hover {
+    background-color: #1c5980;
+  }
+
+  .main-content {
+    margin-left: 240px;
+    max-width: 750px;
+    background: white;
+    padding: 30px 40px;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+  }
+
+  h2 {
+    color: #2c3e50;
+    margin-bottom: 20px;
+  }
+
+  label {
+    display: block;
+    margin-top: 12px;
+    font-weight: 600;
+    color: #34495e;
+  }
+
+  input, select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1.5px solid #bdc3c7;
+    border-radius: 6px;
+    font-size: 1rem;
+  }
+
+  button {
+    margin-top: 15px;
+    padding: 12px;
+    font-size: 1rem;
+    background-color: #2980b9;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.3s;
+  }
+
+  button:hover {
+    background-color: #1c5980;
+  }
+
+  .application-list {
+    margin-top: 25px;
+  }
+
+  .app-card {
+    border: 1px solid #dcdcdc;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 15px;
+    background: #fafafa;
+  }
+
+  .app-card h4 {
+    margin: 0 0 10px;
+    color: #2c3e50;
+  }
+
+  .status {
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-weight: bold;
+    font-size: 0.9rem;
+  }
+
+  .status.applied { background: #ecf0f1; color: #2c3e50; }
+  .status.reviewed { background: #f1c40f; color: #fff; }
+  .status.selected { background: #27ae60; color: #fff; }
+  .status.rejected { background: #e74c3c; color: #fff; }
+
+  @media (max-width: 768px) {
+    .sidebar {
+      position: static;
+      width: 100%;
+      height: auto;
+      border-radius: 10px 10px 0 0;
+      flex-direction: row;
+      overflow-x: auto;
+      padding: 10px 5px;
+      margin-bottom: 20px;
+    }
+    .sidebar a {
+      margin-bottom: 0;
+      margin-right: 12px;
+      white-space: nowrap;
+    }
+    .main-content {
+      margin-left: 0;
+      max-width: 100%;
+      padding: 20px;
+    }
+  }
+</style>
+</head>
+<body>
+
+  <!-- Sidebar Navigation -->
+  <nav class="sidebar">
+    <a href="job_search.html">Job Search</a>
+    <a href="eligibility_checker.html">Eligibility Checker</a>
+    <a href="application.html">Application Tracker</a>
+    <a href="notification.html">Notification System</a>
+    <a href="study_material.html">Study Materials</a>
+    <a href="community_forum.html">Community Forum</a>
+    <a href="view_profile.html">View Profile</a>
+    <a href="show_ai_recommendation.html">AI Recommendation</a>
+  </nav>
+
+  <div class="main-content">
+    <h2>Application Tracker</h2>
+
+    <form id="appForm">
+      <label for="jobTitle">Job Title</label>
+      <input type="text" id="jobTitle" required />
+
+      <label for="department">Department</label>
+      <input type="text" id="department" required />
+
+      <label for="state">State</label>
+      <input type="text" id="state" required />
+
+      <label for="status">Application Status</label>
+      <select id="status" required>
+        <option value="applied">Applied</option>
+        <option value="reviewed">Under Review</option>
+        <option value="selected">Selected</option>
+        <option value="rejected">Rejected</option>
+      </select>
+
+      <button type="submit">Add Application</button>
+    </form>
+
+    <h3 style="margin-top:30px; color:#2c3e50;">Your Applications</h3>
+    <div id="appList" class="application-list"></div>
+  </div>
+
+<script>
+  const appForm = document.getElementById("appForm");
+  const appList = document.getElementById("appList");
+
+  // Load applications from localStorage
+  let applications = JSON.parse(localStorage.getItem("applications")) || [];
+
+  // Render application cards
+  function renderApplications() {
+    appList.innerHTML = "";
+    if (applications.length === 0) {
+      appList.innerHTML = "<p>No applications added yet.</p>";
+      return;
+    }
+
+    applications.forEach((app, index) => {
+      const card = document.createElement("div");
+      card.classList.add("app-card");
+      card.innerHTML = `
+        <h4>${app.jobTitle}</h4>
+        <p><strong>Department:</strong> ${app.department}</p>
+        <p><strong>State:</strong> ${app.state}</p>
+        <p><strong>Status:</strong> <span class="status ${app.status}">${app.status.toUpperCase()}</span></p>
+        <button onclick="deleteApplication(${index})" style="background:#e74c3c; margin-top:10px;">Delete</button>
+      `;
+      appList.appendChild(card);
+    });
+  }
+
+  // Add new application
+  appForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    const newApp = {
+      jobTitle: document.getElementById("jobTitle").value.trim(),
+      department: document.getElementById("department").value.trim(),
+      state: document.getElementById("state").value.trim(),
+      status: document.getElementById("status").value
+    };
+
+    applications.push(newApp);
+    localStorage.setItem("applications", JSON.stringify(applications));
+
+    appForm.reset();
+    renderApplications();
+  });
+
+  // Delete application
+  function deleteApplication(index) {
+    if (confirm("Are you sure you want to delete this application?")) {
+      applications.splice(index, 1);
+      localStorage.setItem("applications", JSON.stringify(applications));
+      renderApplications();
+    }
+  }
+
+  // Initial render
+  renderApplications();
+</script>
+
+</body>
+</html>
