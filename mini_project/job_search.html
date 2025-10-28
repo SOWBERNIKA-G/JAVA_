@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Government Job Finder - Job Search</title>
+<style>
+  body { font-family: Arial, sans-serif; background: #f4f7f6; padding: 20px; margin: 0; }
+  .sidebar { position: fixed; top: 20px; left: 20px; width: 200px; height: calc(100vh - 40px); background: #2980b9; border-radius: 10px; padding: 20px; display: flex; flex-direction: column; }
+  .sidebar a { color: white; text-decoration: none; padding: 12px 15px; border-radius: 6px; font-weight: 600; margin-bottom: 12px; transition: background-color 0.3s; font-size: 1rem; }
+  .sidebar a:hover { background-color: #1c5980; }
+  .main-content { margin-left: 240px; max-width: 900px; background: white; padding: 30px 40px; border-radius: 10px; box-shadow: 0 0 15px rgba(0,0,0,0.1); }
+  h2 { color: #2c3e50; margin-bottom: 15px; }
+  .filters { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 15px; margin-bottom: 20px; }
+  .filters input, .filters select { padding: 10px; border: 1.5px solid #bdc3c7; border-radius: 6px; font-size: 1rem; }
+  button { padding: 12px; font-size: 1rem; background-color: #2980b9; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; transition: background-color 0.3s; }
+  button:hover { background-color: #1c5980; }
+  .job-card { border: 1px solid #dcdcdc; border-radius: 10px; padding: 20px; margin-bottom: 20px; background: #fafafa; }
+  .job-card h3 { margin: 0 0 10px; color: #2c3e50; }
+  .job-card p { margin: 6px 0; color: #34495e; }
+  .section-title { margin-top: 30px; margin-bottom: 15px; color: #2c3e50; border-bottom: 2px solid #2980b9; padding-bottom: 5px; }
+  @media (max-width: 768px) { .sidebar { position: static; width: 100%; height: auto; border-radius: 10px 10px 0 0; flex-direction: row; overflow-x: auto; padding: 10px 5px; margin-bottom: 20px; } .sidebar a { margin-bottom: 0; margin-right: 12px; white-space: nowrap; } .main-content { margin-left: 0; max-width: 100%; padding: 20px; } }
+</style>
+</head>
+<body>
+
+<!-- Sidebar Navigation -->
+<nav class="sidebar">
+  <a href="job_search.html">Job Search</a>
+  <a href="eligibility_checker.html">Eligibility Checker</a>
+  <a href="application.html">Application Tracker</a>
+  <a href="notification.html">Notification System</a>
+  <a href="study_material.html">Study Materials</a>
+  <a href="community_forum.html">Community Forum</a>
+  <a href="view_profile.html">View Profile</a>
+  <a href="show_ai_recommendation.html">AI Recommendation</a>
+</nav>
+
+<div class="main-content">
+  <h2>Search Government Jobs</h2>
+
+  <!-- Filters -->
+  <div class="filters">
+    <input type="text" id="keyword" placeholder="Keyword(s) (comma-separated)" />
+    <select id="department">
+      <option value="">All Departments</option>
+      <option>Railways</option>
+      <option>Banking</option>
+      <option>Police</option>
+      <option>Defence</option>
+      <option>Teaching</option>
+    </select>
+    <select id="state">
+      <option value="">All States</option>
+      <option>Tamil Nadu</option>
+      <option>Kerala</option>
+      <option>Maharashtra</option>
+      <option>Delhi</option>
+      <option>Karnataka</option>
+    </select>
+    <select id="qualification">
+      <option value="">Any Qualification</option>
+      <option>10th Pass</option>
+      <option>12th Pass</option>
+      <option>Diploma</option>
+      <option>Graduate</option>
+      <option>Post Graduate</option>
+    </select>
+  </div>
+  <button id="searchBtn">Search</button>
+
+  <!-- Recommended Jobs -->
+  <h3 class="section-title">Recommended Jobs for You</h3>
+  <div id="recommendedJobs"></div>
+
+  <!-- All Jobs -->
+  <h3 class="section-title">All Available Jobs</h3>
+  <div id="jobResults"></div>
+</div>
+
+<script>
+  // Sample jobs dataset
+  const jobs = [
+    { title: "Clerk", department: "Banking", state: "Tamil Nadu", qualification: "Graduate", lastDate: "2025-10-15" },
+    { title: "Constable", department: "Police", state: "Kerala", qualification: "12th Pass", lastDate: "2025-09-30" },
+    { title: "Junior Engineer", department: "Railways", state: "Maharashtra", qualification: "Diploma", lastDate: "2025-11-05" },
+    { title: "Teacher", department: "Teaching", state: "Delhi", qualification: "Post Graduate", lastDate: "2025-10-20" },
+    { title: "Teacher", department: "Teaching", state: "Tamil Nadu", qualification: "Post Graduate", lastDate: "2025-11-15" },
+    { title: "Teacher", department: "Teaching", state: "Tamil Nadu", qualification: "Graduate", lastDate: "2025-11-30" },
+    { title: "Soldier", department: "Defence", state: "Karnataka", qualification: "10th Pass", lastDate: "2025-12-01" }
+  ];
+
+  const jobResults = document.getElementById("jobResults");
+  const recommendedJobs = document.getElementById("recommendedJobs");
+  const searchBtn = document.getElementById("searchBtn");
+
+  function renderJobs(container, list) {
+    container.innerHTML = "";
+    if (list.length === 0) return container.innerHTML = "<p>No jobs found.</p>";
+    list.forEach(job => {
+      const card = document.createElement("div");
+      card.classList.add("job-card");
+      card.innerHTML = `
+        <h3>${job.title}</h3>
+        <p><strong>Department:</strong> ${job.department}</p>
+        <p><strong>State:</strong> ${job.state}</p>
+        <p><strong>Qualification:</strong> ${job.qualification}</p>
+        <p><strong>Last Date:</strong> ${job.lastDate}</p>
+      `;
+      container.appendChild(card);
+    });
+  }
+
+  function loadAIRecommendations() {
+    const storedProfile = JSON.parse(localStorage.getItem("govJobProfile") || "{}");
+    const skills = (storedProfile.skills || "").toLowerCase().split(",").map(s => s.trim());
+    const interests = (storedProfile.interests || "").toLowerCase().split(",").map(s => s.trim());
+    const edu = storedProfile.education || "";
+
+    const eduMap = { "10": "10th Pass", "12": "12th Pass", "Diploma":"Diploma", "B.Sc":"Graduate", "B.A":"Graduate", "B.Com":"Graduate", "M.Sc":"Post Graduate","M.A":"Post Graduate","MBA":"Post Graduate" };
+    let matchedQual = "Graduate";
+    for (const key in eduMap) if (edu.includes(key)) matchedQual = eduMap[key];
+
+    const scored = jobs.map(job => {
+      let score = 0;
+      if (job.qualification === matchedQual) score += 30;
+      skills.forEach(s => { if(job.title.toLowerCase().includes(s)) score+=15; if(job.department.toLowerCase().includes(s)) score+=10; });
+      interests.forEach(i => { if(job.title.toLowerCase().includes(i)) score+=15; if(job.department.toLowerCase().includes(i)) score+=10; });
+      return {...job, score};
+    });
+
+    scored.sort((a,b)=>b.score-a.score);
+    renderJobs(recommendedJobs, scored.slice(0,5));
+  }
+
+  // Search function supporting multiple keywords
+  searchBtn.addEventListener("click", ()=>{
+    const keywords = document.getElementById("keyword").value.toLowerCase().split(",").map(k=>k.trim()).filter(k=>k);
+    const dept = document.getElementById("department").value;
+    const state = document.getElementById("state").value;
+    const qual = document.getElementById("qualification").value;
+
+    const filtered = jobs.filter(job=>{
+      const title = job.title.toLowerCase();
+      const department = job.department.toLowerCase();
+      const stateName = job.state.toLowerCase();
+      const qualReq = job.qualification.toLowerCase();
+
+      const keywordMatch = keywords.length===0 || keywords.some(k=>title.includes(k) || department.includes(k));
+      return keywordMatch &&
+             (dept==="" || job.department===dept) &&
+             (state==="" || job.state===state) &&
+             (qual==="" || job.qualification===qual);
+    });
+
+    renderJobs(jobResults, filtered);
+  });
+
+  // Initial render
+  renderJobs(jobResults, jobs);
+  loadAIRecommendations();
+</script>
+</body>
+</html>

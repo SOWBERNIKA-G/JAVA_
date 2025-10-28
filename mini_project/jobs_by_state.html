@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Jobs by State | AI GovJobFinder</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary: #0d47a1;
+      --secondary: #1565c0;
+      --accent: #42a5f5;
+      --light-bg: #f4f7fb;
+      --white: #fff;
+      --text-dark: #1a1a1a;
+      --muted: #555;
+      --shadow: 0 4px 12px rgba(0,0,0,0.1);
+      --radius: 12px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--light-bg);
+      color: var(--text-dark);
+    }
+
+    header {
+      background: linear-gradient(to right, var(--primary), var(--secondary));
+      color: white;
+      padding: 20px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: var(--shadow);
+    }
+
+    header h1 {
+      font-size: 22px;
+      font-weight: 600;
+    }
+
+    header button {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: 0.3s;
+      font-weight: 500;
+    }
+
+    header button:hover {
+      background: #2196f3;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+
+    .filters button {
+      background: var(--white);
+      border: 1px solid #ccc;
+      border-radius: var(--radius);
+      padding: 10px 20px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: 0.3s;
+      box-shadow: var(--shadow);
+    }
+
+    .filters button:hover,
+    .filters button.active {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+
+    .jobs-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    .job-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 20px;
+      transition: 0.3s;
+    }
+
+    .job-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .job-card h3 {
+      color: var(--secondary);
+      font-size: 18px;
+      margin-bottom: 5px;
+    }
+
+    .job-card p {
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .job-card button {
+      background: var(--secondary);
+      color: white;
+      border: none;
+      border-radius: var(--radius);
+      padding: 8px 14px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: 0.3s;
+    }
+
+    .job-card button:hover {
+      background: var(--accent);
+    }
+
+    .ai-suggest {
+      text-align: center;
+      margin-top: 40px;
+    }
+
+    .ai-suggest button {
+      padding: 12px 26px;
+      font-size: 16px;
+      background: linear-gradient(to right, var(--secondary), var(--accent));
+      color: white;
+      border: none;
+      border-radius: var(--radius);
+      cursor: pointer;
+      box-shadow: var(--shadow);
+      transition: 0.3s;
+      font-weight: 600;
+    }
+
+    .ai-suggest button:hover {
+      background: var(--accent);
+    }
+
+    footer {
+      background: var(--primary);
+      color: white;
+      text-align: center;
+      padding: 20px;
+      margin-top: 60px;
+    }
+
+    footer p { font-size: 14px; }
+
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>Jobs by State – AI GovJobFinder</h1>
+    <button onclick="window.location.href='home.html'">🏠 Home</button>
+  </header>
+
+  <div class="container">
+    <h2 style="text-align:center; color:var(--primary); margin-bottom:20px;">Select Your State</h2>
+
+    <div class="filters" id="stateButtons"></div>
+
+    <div class="jobs-container" id="jobList">
+      <p style="text-align:center; color:var(--muted);">Please select a state to view job listings.</p>
+    </div>
+
+    <div class="ai-suggest">
+      <button onclick="showAISuggestions()">🤖 AI Suggest for This State</button>
+    </div>
+  </div>
+
+  <footer>
+    <p>© 2025 AI GovJobFinder | Empowering Careers with Intelligence</p>
+  </footer>
+
+  <script>
+    const states = [
+      "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh", "Goa",
+      "Gujarat", "Haryana", "Himachal Pradesh", "Jharkhand", "Karnataka", "Kerala",
+      "Madhya Pradesh", "Maharashtra", "Manipur", "Meghalaya", "Mizoram", "Nagaland",
+      "Odisha", "Punjab", "Rajasthan", "Sikkim", "Tamil Nadu", "Telangana", "Tripura",
+      "Uttar Pradesh", "Uttarakhand", "West Bengal", "Delhi", "Puducherry", "Jammu & Kashmir",
+      "Ladakh", "Andaman & Nicobar", "Chandigarh"
+    ];
+
+    const jobsData = {
+      "Tamil Nadu": [
+        { title: "Junior Assistant", dept: "TNPSC", deadline: "30 Nov 2025" },
+        { title: "Assistant Engineer", dept: "TANGEDCO", deadline: "20 Dec 2025" }
+      ],
+      "Maharashtra": [
+        { title: "Police Constable", dept: "MPSC", deadline: "15 Nov 2025" },
+        { title: "Clerk Typist", dept: "Maharashtra Secretariat", deadline: "5 Dec 2025" }
+      ],
+      "Delhi": [
+        { title: "Administrative Officer", dept: "UPSC", deadline: "10 Dec 2025" },
+        { title: "Clerk", dept: "Delhi Subordinate Services", deadline: "25 Nov 2025" }
+      ],
+      "Karnataka": [
+        { title: "Data Entry Operator", dept: "KPSC", deadline: "30 Nov 2025" },
+        { title: "Accounts Officer", dept: "Finance Dept", deadline: "18 Dec 2025" }
+      ]
+    };
+
+    const stateButtonsContainer = document.getElementById('stateButtons');
+    const jobList = document.getElementById('jobList');
+
+    states.forEach(state => {
+      const btn = document.createElement('button');
+      btn.textContent = state;
+      btn.onclick = () => showJobs(state, btn);
+      stateButtonsContainer.appendChild(btn);
+    });
+
+    function showJobs(state, btn) {
+      document.querySelectorAll('.filters button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      
+      const jobs = jobsData[state] || [];
+      if (jobs.length === 0) {
+        jobList.innerHTML = `<p style="text-align:center; color:var(--muted);">No jobs currently available in <b>${state}</b>.</p>`;
+        return;
+      }
+
+      jobList.innerHTML = jobs.map(job => `
+        <div class="job-card">
+          <h3>${job.title}</h3>
+          <p>Department: ${job.dept}</p>
+          <p>Apply by: ${job.deadline}</p>
+          <button>Apply Now</button>
+        </div>
+      `).join('');
+    }
+
+    function showAISuggestions() {
+      const activeState = document.querySelector('.filters button.active');
+      if (!activeState) {
+        alert("Please select a state first!");
+        return;
+      }
+    }
+  </script>
+</body>
+</html>

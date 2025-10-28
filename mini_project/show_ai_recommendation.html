@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Job Recommendations</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #f4f7f6;
+    margin: 0;
+    padding: 20px;
+  }
+  .sidebar {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    width: 200px;
+    height: calc(100vh - 40px);
+    background: #2980b9;
+    border-radius: 10px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+  }
+  .sidebar a {
+    color: white;
+    text-decoration: none;
+    padding: 12px 15px;
+    border-radius: 6px;
+    margin-bottom: 12px;
+    font-weight: 600;
+  }
+  .sidebar a:hover { background-color: #1c5980; }
+  .main-content {
+    margin-left: 240px;
+    max-width: 900px;
+    background: white;
+    padding: 30px 40px;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+  }
+  h2 { color: #2c3e50; margin-bottom: 15px; }
+  .job-card {
+    border: 1px solid #dcdcdc;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 15px;
+    background: #fafafa;
+  }
+  .job-card h3 { margin: 0 0 10px; color: #2c3e50; }
+  .job-card p { margin: 6px 0; color: #34495e; }
+  @media (max-width:768px) {
+    .sidebar { position: static; width: 100%; height: auto; flex-direction: row; padding: 10px; margin-bottom: 20px; }
+    .sidebar a { margin-right: 12px; }
+    .main-content { margin-left: 0; max-width: 100%; padding: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="sidebar">
+  <a href="job_search.html">Job Search</a>
+  <a href="eligibility_checker.html">Eligibility Checker</a>
+  <a href="application.html">Application Tracker</a>
+  <a href="notification.html">Notification System</a>
+  <a href="study_material.html">Study Materials</a>
+  <a href="community_forum.html">Community Forum</a>
+  <a href="view_profile.html">View Profile</a>
+  <a href="show_ai_recommendation.html">AI Recommendation</a>
+</nav>
+
+<div class="main-content">
+  <h2>AI Job Recommendations (ML Style)</h2>
+  <div id="recommendedJobs"></div>
+</div>
+
+<script>
+// Sample job dataset
+const jobs = [
+  { title: "Clerk", department: "Banking", state: "Tamil Nadu", qualification: "Graduate", lastDate: "2025-10-15" },
+  { title: "Constable", department: "Police", state: "Kerala", qualification: "12th Pass", lastDate: "2025-09-30" },
+  { title: "Junior Engineer", department: "Railways", state: "Maharashtra", qualification: "Diploma", lastDate: "2025-11-05" },
+  { title: "Teacher", department: "Teaching", state: "Delhi", qualification: "Post Graduate", lastDate: "2025-10-20" },
+  { title: "Teacher", department: "Teaching", state: "Tamil Nadu", qualification: "Post Graduate", lastDate: "2025-11-15" },
+  { title: "Teacher", department: "Teaching", state: "Tamil Nadu", qualification: "Graduate", lastDate: "2025-11-30" },
+  { title: "Soldier", department: "Defence", state: "Karnataka", qualification: "10th Pass", lastDate: "2025-12-01" }
+];
+
+// Cosine similarity helper
+function cosineSim(a, b) {
+  const allKeys = new Set([...Object.keys(a), ...Object.keys(b)]);
+  let dot = 0, magA = 0, magB = 0;
+  allKeys.forEach(k=>{
+    const valA = a[k] || 0;
+    const valB = b[k] || 0;
+    dot += valA * valB;
+    magA += valA*valA;
+    magB += valB*valB;
+  });
+  return magA && magB ? dot / (Math.sqrt(magA)*Math.sqrt(magB)) : 0;
+}
+
+// Encode text as simple feature vector
+function encodeFeatures(text, vocab) {
+  const vec = {};
+  vocab.forEach(word=>{
+    vec[word] = text.toLowerCase().includes(word.toLowerCase()) ? 1 : 0;
+  });
+  return vec;
+}
+
+// Main recommendation
+const recommendedJobs = document.getElementById("recommendedJobs");
+const storedProfile = localStorage.getItem('govJobProfile');
+if(!storedProfile) {
+  recommendedJobs.innerHTML = "<p>No profile found. Please create your profile first.</p>";
+} else {
+  const profile = JSON.parse(storedProfile);
+  const skills = profile.skills?.split(',').map(s=>s.trim().toLowerCase()) || [];
+  const interests = profile.interests?.split(',').map(s=>s.trim().toLowerCase()) || [];
+  const edu = profile.education || '';
+  const state = profile.state?.toLowerCase() || '';
+
+  // Build user vector (skills + interests + state + education)
+  const userText = [...skills, ...interests, edu, state].join(' ');
+  
+  // Build vocabulary from jobs
+  let vocab = new Set();
+  jobs.forEach(job=>{
+    vocab = new Set([...vocab, ...job.title.split(' '), ...job.department.split(' '), job.state, job.qualification]);
+  });
+  vocab = Array.from(vocab);
+
+  const userVec = encodeFeatures(userText, vocab);
+
+  // Score each job
+  const scoredJobs = jobs.map(job=>{
+    const jobText = `${job.title} ${job.department} ${job.state} ${job.qualification}`;
+    const jobVec = encodeFeatures(jobText, vocab);
+    const score = cosineSim(userVec, jobVec);
+    return {...job, score};
+  });
+
+  scoredJobs.sort((a,b)=>b.score - a.score);
+
+  // Show top 5
+  const topJobs = scoredJobs.slice(0,5);
+  recommendedJobs.innerHTML = '';
+  if(topJobs.length===0) recommendedJobs.innerHTML = "<p>No recommendations available.</p>";
+  topJobs.forEach(job=>{
+    const card = document.createElement("div");
+    card.classList.add("job-card");
+    card.innerHTML = `
+      <h3>${job.title}</h3>
+      <p><strong>Department:</strong> ${job.department}</p>
+      <p><strong>State:</strong> ${job.state}</p>
+      <p><strong>Qualification:</strong> ${job.qualification}</p>
+      <p><strong>Last Date:</strong> ${job.lastDate}</p>
+      <p><strong>Score:</strong> ${(job.score*100).toFixed(2)}</p>
+    `;
+    recommendedJobs.appendChild(card);
+  });
+}
+</script>
+</body>
+</html>
