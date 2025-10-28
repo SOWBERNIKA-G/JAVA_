@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Create/Edit Profile - Government Job Finder</title>
+<style>
+  body { font-family: Arial, sans-serif; background: #f4f7f6; padding: 20px; }
+  .profile-container { max-width: 600px; margin: auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 0 15px rgba(0,0,0,0.1); }
+  h2 { color: #2c3e50; text-align: center; margin-bottom: 25px; }
+  label { display: block; margin-top: 15px; font-weight: bold; color: #34495e; }
+  input, textarea { width: 100%; padding: 10px; margin-top: 6px; border: 1.5px solid #bdc3c7; border-radius: 6px; font-size: 1rem; }
+  button { margin-top: 20px; padding: 12px; width: 100%; font-size: 1rem; background-color: #2980b9; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; transition: background 0.3s; }
+  button:hover { background-color: #1c5980; }
+</style>
+</head>
+<body>
+
+<div class="profile-container">
+  <h2>Create / Edit Profile</h2>
+  <form id="profileForm">
+    <label for="fullname">Full Name</label>
+    <input type="text" id="fullname" required>
+
+    <label for="email">Email</label>
+    <input type="email" id="email" required>
+
+    <label for="age">Age</label>
+    <input type="number" id="age" required>
+
+    <label for="state">State</label>
+    <input type="text" id="state" required>
+
+    <label for="education">Education</label>
+    <input type="text" id="education">
+
+    <label for="skills">Skills</label>
+    <input type="text" id="skills" placeholder="e.g., JavaScript, Communication">
+
+    <label for="interests">Interests</label>
+    <input type="text" id="interests" placeholder="e.g., Teaching, Police, Banking">
+
+    <label for="bio">Bio</label>
+    <textarea id="bio" rows="4" placeholder="Brief info about you"></textarea>
+
+    <label for="profilePic">Profile Picture</label>
+    <input type="file" id="profilePic" accept="image/*">
+
+    <button type="submit">Save Profile</button>
+  </form>
+</div>
+
+<script>
+const form = document.getElementById('profileForm');
+
+// Load profile if exists
+const storedProfile = localStorage.getItem('govJobProfile');
+if(storedProfile){
+  const profile = JSON.parse(storedProfile);
+  document.getElementById('fullname').value = profile.fullname || '';
+  document.getElementById('email').value = profile.email || '';
+  document.getElementById('age').value = profile.age || '';
+  document.getElementById('state').value = profile.state || '';
+  document.getElementById('education').value = profile.education || '';
+  document.getElementById('skills').value = profile.skills || '';
+  document.getElementById('interests').value = profile.interests || '';
+  document.getElementById('bio').value = profile.bio || '';
+}
+
+form.addEventListener('submit', function(e){
+  e.preventDefault();
+
+  const reader = new FileReader();
+  const file = document.getElementById('profilePic').files[0];
+
+  reader.onloadend = function(){
+    const profileData = {
+      fullname: document.getElementById('fullname').value,
+      email: document.getElementById('email').value,
+      age: document.getElementById('age').value,
+      state: document.getElementById('state').value,
+      education: document.getElementById('education').value,
+      skills: document.getElementById('skills').value,
+      interests: document.getElementById('interests').value,
+      bio: document.getElementById('bio').value,
+      profilePicData: reader.result || null
+    };
+    localStorage.setItem('govJobProfile', JSON.stringify(profileData));
+    window.location.href = 'view_profile.html';
+  }
+
+  if(file){
+    reader.readAsDataURL(file);
+  } else {
+    reader.onloadend();
+  }
+});
+</script>
+</body>
+</html>

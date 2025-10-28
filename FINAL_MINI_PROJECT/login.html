@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" href="login.css" />
+
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Login Page</title>
+<style>
+  body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(to right, #74ebd5, #9face6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.login-container {
+  background-color: white;
+  padding: 40px;
+  border-radius: 10px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  width: 300px;
+}
+
+.login-container h2 {
+  text-align: center;
+  margin-bottom: 24px;
+  color: #333;
+}
+
+form label {
+  display: block;
+  margin-bottom: 8px;
+  color: #555;
+}
+
+form input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+form button {
+  width: 100%;
+  padding: 10px;
+  background-color: #5c6bc0;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+form button:hover {
+  background-color: #3f51b5;
+}
+
+</style>
+</head>
+<body>
+
+<div class="login-container">
+  <h2>Login</h2>
+  <form id="loginForm">
+    <label for="username">Username</label>
+    <input type="text" id="username" placeholder="Enter username" required />
+
+    <label for="password">Password</label>
+    <input type="password" id="password" placeholder="Enter password" required />
+
+    <button type="submit">Login</button>
+    <div class="error" id="errorMsg"></div>
+  </form>
+</div>
+
+<script>
+  const loginForm = document.getElementById('loginForm');
+  const errorMsg = document.getElementById('errorMsg');
+
+  // Simple demo credentials (replace or expand as needed)
+  const demoUser = {
+    username: "sandhiya",
+    password: "12345"
+  };
+
+  loginForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+
+    if (username === demoUser.username && password === demoUser.password) {
+      // Successful login
+      window.location.href = "profile.html"; // Redirect to profile page
+    } else {
+      // Wrong credentials
+      errorMsg.textContent = "Invalid username or password!";
+    }
+  });
+</script>
+
+</body>
+</html>

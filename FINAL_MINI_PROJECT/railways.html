@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Railways Jobs</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #0d47a1;
+      --secondary: #1565c0;
+      --accent: #42a5f5;
+      --light-bg: #f4f7fb;
+      --white: #fff;
+      --shadow: 0 4px 12px rgba(0,0,0,0.1);
+      --radius: 12px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--light-bg);
+      color: #333;
+      padding: 40px 20px;
+    }
+
+    header {
+      text-align: center;
+      background: linear-gradient(to right, var(--primary), var(--secondary));
+      color: white;
+      padding: 20px 0;
+      border-radius: 10px;
+      margin-bottom: 40px;
+      box-shadow: var(--shadow);
+    }
+
+    header h1 { font-size: 26px; font-weight: 600; }
+
+    h2 {
+      text-align: center;
+      color: var(--primary);
+      margin-bottom: 30px;
+      font-size: 24px;
+    }
+
+    .jobs-list {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 25px;
+    }
+
+    .job-card {
+      background: var(--white);
+      padding: 25px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      width: 320px;
+      transition: 0.3s;
+    }
+
+    .job-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+    }
+
+    .job-card h3 { color: var(--secondary); font-size: 18px; margin-bottom: 10px; }
+    .job-card p { font-size: 14px; color: #555; margin-bottom: 8px; }
+
+    .job-card button {
+      background: linear-gradient(to right, var(--secondary), var(--accent));
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 500;
+      margin-top: 10px;
+      transition: 0.3s;
+    }
+
+    .job-card button:hover { background: var(--accent); }
+
+    .back-btn {
+      display: block;
+      margin: 40px auto 0;
+      padding: 10px 20px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: 0.3s;
+    }
+
+    .back-btn:hover { background: var(--secondary); }
+
+    footer {
+      text-align: center;
+      margin-top: 50px;
+      color: #555;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>AI GovJobFinder</h1>
+  </header>
+
+  <h2>Latest Railway Jobs</h2>
+
+  <div class="jobs-list">
+    <div class="job-card">
+      <h3>Junior Engineer – Indian Railways</h3>
+      <p>Positions: Civil, Electrical, Mechanical</p>
+      <p>Qualification: Diploma / Graduate</p>
+      <button>View Details</button>
+    </div>
+
+    <div class="job-card">
+      <h3>Station Master Recruitment</h3>
+      <p>Positions: Station Master, Assistant Station Master</p>
+      <p>Qualification: Graduate / ITI</p>
+      <button>Apply Now</button>
+    </div>
+
+    <div class="job-card">
+      <h3>Railway Group D Recruitment</h3>
+      <p>Positions: Track Maintainer, Helper, Assistant Pointsman</p>
+      <p>Qualification: 10th Pass</p>
+      <button>Check Notification</button>
+    </div>
+
+    <div class="job-card">
+      <h3>Senior Section Engineer</h3>
+      <p>Positions: Electrical, Civil, Mechanical</p>
+      <p>Qualification: Graduate / Engineering</p>
+      <button>Apply</button>
+    </div>
+  </div>
+
+  <button class="back-btn" onclick="window.location.href='index.html'">⬅ Back to Home</button>
+
+  <footer>
+    <p>© 2025 AI GovJobFinder | Railway Jobs Portal</p>
+  </footer>
+</body>
+</html>
